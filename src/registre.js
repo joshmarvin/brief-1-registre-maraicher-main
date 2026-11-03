@@ -8,18 +8,26 @@ export const OPERATIONS = ['semis', 'arrosage', 'désherbage', 'repiquage', 'ré
 // Renvoie une ligne de texte qui décrit l'opération.
 // Exemple : 'O03 | 2026-10-21 | P1 | tomate | arrosage | 2000 FCFA'
 export function formaterOperation(operation) {
-  throw new Error('TODO : coder formaterOperation dans src/registre.js');
+  return `${operation.id} | ${operation.date} | ${operation.parcelle} | ${operation.culture} | ${operation.operation} | ${operation.coutFCFA} FCFA`;
+ // throw new Error('TODO : coder formaterOperation dans src/registre.js');
 }
 
 // Renvoie un texte avec une opération par ligne (lignes séparées par '\n'),
 // ou 'Aucune opération enregistrée.' si la liste est vide.
 export function listerOperations(operations) {
-  throw new Error('TODO : coder listerOperations dans src/registre.js');
+ 
+  if (operations.length === 0) {
+    return 'Aucune opération enregistrée.';
+  }
+  return operations.map(formaterOperation).join('\n');
 }
+ // throw new Error('TODO : coder listerOperations dans src/registre.js');
+
 
 // Renvoie l'opération qui a cet identifiant, ou undefined si elle n'existe pas.
 export function trouverParId(operations, id) {
-  throw new Error('TODO : coder trouverParId dans src/registre.js');
+   return operations.find(op => op.id === id);
+  //throw new Error('TODO : coder trouverParId dans src/registre.js');
 }
 
 // Contrôle une saisie AVANT de l'ajouter. Tous les champs arrivent sous forme de TEXTE :
@@ -30,16 +38,54 @@ export function trouverParId(operations, id) {
 // obligatoires (n'importe quel texte non vide) · operation présente dans OPERATIONS
 // · coutFCFA nombre positif ou nul.
 export function verifierOperation(saisie, operations) {
-  throw new Error('TODO : coder verifierOperation dans src/registre.js');
+  const erreurs = [];
+  if (saisie.id ===''){
+    erreurs.push ('id obligatoire');
+  }
+  else if (trouverParId(operations,saisie.id)!== undefined) {
+    erreurs.push(`identifiant ${saisie.id} existe deja`);
+  }
+  if(!estDateValide(saisie.date)){
+    erreurs.push ('Date invalide, la date doit etre au format AAAA-MM-JJ');
+  }
+  if(saisie.parcelle===''){
+    erreurs.push('Veuillez entrer une parcelle');
+  }
+  if(saisie.culture === ''){
+    erreurs.push('Entrez une culture')
+  }
+  if (!OPERATIONS.includes(saisie.operation)){
+    erreurs.push('Entrez une operation de la liste fermée : semis, arrosage, désherbage,repiquage, récolte')
+  }
+  const a = versNombre(saisie.coutFCFA)
+  if(Number.isNaN(a) || a<0  ){
+    erreurs.push('entrez un cout positif')
+  }
+  return erreurs
 }
 
 // Fabrique l'opération à enregistrer à partir d'une saisie VALIDE : coutFCFA devient un nombre.
 export function creerOperation(saisie) {
+  return {
+    id: saisie.id,
+    date: saisie.date,
+    parcelle : saisie.parcelle,
+    culture : saisie.culture,
+    operation : saisie.operation,
+    coutFCFA : versNombre(saisie.coutFCFA)
+  }
+
   throw new Error('TODO : coder creerOperation dans src/registre.js');
 }
 
 // Ajoute la saisie au registre si elle est valide (verifierOperation, puis creerOperation).
 // Renvoie les erreurs : [] si l'opération a été ajoutée ; sinon les messages, et rien n'est ajouté.
 export function ajouterOperation(operations, saisie) {
+const erreur = verifierOperation(saisie,operations)
+if(erreur.length>0){
+  return erreur;
+}
+operations.push(creerOperation(saisie));
+return []
   throw new Error('TODO : coder ajouterOperation dans src/registre.js');
 }
