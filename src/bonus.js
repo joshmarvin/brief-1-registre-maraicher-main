@@ -11,8 +11,15 @@ export const CHAMPS_MODIFIABLES = ['date', 'parcelle', 'culture', 'operation', '
 // Supprime du registre l'opération qui a cet identifiant.
 // Renvoie l'opération supprimée, ou undefined si elle n'existe pas (le registre ne change pas).
 export function supprimerOperation(operations, id) {
-  throw new Error('TODO Bonus : coder supprimerOperation dans src/bonus.js');
+  
+ const position = operations.findIndex((a) => a.id === id);
+  if (position === -1) {
+    return undefined;
+  }
+  const [supprimee] = operations.splice(position, 1);
+  return supprimee;
 }
+
 
 // Modifie UN champ d'une opération. La nouvelle valeur arrive sous forme de TEXTE et suit
 // les mêmes règles qu'à l'ajout. Renvoie les erreurs : [] si la modification est faite ;
