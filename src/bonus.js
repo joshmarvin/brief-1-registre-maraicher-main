@@ -65,4 +65,4 @@ export function parcelleLaPlusCouteuse(operations) {
   }
   return meilleure;
 }
-}
+
